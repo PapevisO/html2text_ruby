@@ -77,7 +77,14 @@ class Html2Text
     if node.name.downcase == "img"
       output = image_text(node)
     end
-
+    # Specifically for mjml-premailer to strip marked tags from plaintext version
+    # Will be ignored unless configured in environment
+    if(ENV["HTML2TEXT_NORENDER_CLASS"] &&
+      (node.name.downcase == "mj-text") &&
+      (node_class = node.attribute("class")) &&
+       node_class.value.match?(ENV["HTML2TEXT_NORENDER_CLASS"]))
+      output = ""
+    end
     output
   end
 
